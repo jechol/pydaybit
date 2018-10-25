@@ -77,7 +77,10 @@ class API(DaybitChannel):
         super().__init__(socket, topic, params, max_queue, timeout_secs=timeout_secs)
 
     async def get_server_time(self):
-        server_time = (await self.push('get_server_time', payload={}, with_timestamp=False))['server_time']
+        server_time = (await self.push('get_server_time',
+                                       payload={},
+                                       timeout=60 * 60 * 24 * 7,
+                                       with_timestamp=True))['server_time']
         return server_time
 
     async def create_order(self,
