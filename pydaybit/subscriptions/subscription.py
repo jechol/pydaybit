@@ -2,7 +2,7 @@ import asyncio
 import re
 import time
 
-from pydaybit.api_channels import DaybitChannel
+from pydaybit.daybit_channels import DaybitChannel
 from pydaybit.exceptions import PrimaryKeyError
 from pydaybit.utility import optional
 

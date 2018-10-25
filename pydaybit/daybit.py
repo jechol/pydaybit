@@ -5,7 +5,7 @@ from decimal import Decimal
 import websockets
 
 from pydaybit import daybit_url, daybit_api_key, daybit_api_secret, PARAM_API_KEY, PARAM_API_SECRET
-from pydaybit.api_channels import API
+from pydaybit.daybit_channels import API
 from pydaybit.phoenix.message import PHOENIX_EVENT
 from pydaybit.phoenix.phoenix import Phoenix
 from pydaybit.ratelimit import RateLimit
