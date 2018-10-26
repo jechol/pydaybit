@@ -2,7 +2,7 @@ import asyncio
 import re
 import time
 
-from pydaybit.api_channels import DaybitChannel
+from pydaybit.daybit_channels import DaybitChannel
 from pydaybit.exceptions import PrimaryKeyError
 from pydaybit.utility import optional
 
@@ -29,7 +29,7 @@ class Subscription(DaybitChannel):
 
         action = response['action']
         new_data = response.get('data', [{}])
-        self.updated_timestamp = time.time()
+        self.updated_timestamp = self.socket.estimated_timestamp()
 
         assert action in ['init', 'insert', 'update', 'upsert', 'delete']
 

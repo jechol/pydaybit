@@ -3,7 +3,6 @@ import json
 import logging
 import re
 import sys
-import time
 
 import websockets
 from async_timeout import timeout as atimeout
@@ -87,9 +86,11 @@ class Phoenix:
     def _remove_all_channels(self):
         self._channels.clear()
 
-    async def push(self, channel, event, payload, timeout=3, retry=3, wait_response=True):
+    async def push(self, channel, event, payload, timeout=None, retry=3, wait_response=True):
         if not self.connected:
             raise CommunicationError("sent a message before connection.")
+        if timeout is None:
+            timeout = self._timeout_secs
 
         msg_response = None
         ref = None
@@ -105,7 +106,6 @@ class Phoenix:
                         channel.join_ref = ref
                     if payload is None:
                         payload = {}
-                    payload["timestamp"] = int(time.time() * 1000)
                     msg = json.dumps(OutMessage(topic=channel.topic,
                                                 event=event,
                                                 payload=payload,
@@ -177,6 +177,9 @@ class Phoenix:
                             await self._channels[message.topic].messages.put(message)
         except ConnectionClosed:
             pass
+        except Exception:
+            logger.error("Error in data transfer", exc_info=True)
+            await asyncio.shield(self.disconnect(), loop=self.loop)
 
     async def wait_for_disconnection(self):
         await self._socket.connection_lost_waiter
