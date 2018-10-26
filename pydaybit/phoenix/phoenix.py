@@ -175,6 +175,9 @@ class Phoenix:
                             await self._channels[message.topic].messages.put(message)
         except ConnectionClosed:
             pass
+        except Exception:
+            logger.error("Error in data transfer", exc_info=True)
+            await asyncio.shield(self.disconnect(), loop=self.loop)
 
     async def wait_for_disconnection(self):
         await self._socket.connection_lost_waiter
