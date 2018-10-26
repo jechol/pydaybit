@@ -1,5 +1,5 @@
 import os
-
+name = "pydaybit"
 DAYBIT_API_DEFAULT_URL = 'wss://api.daybit.com/v1/user_api_socket/websocket'
 DAYBIT_API_KEY_VARIABLE = 'DAYBIT_API_KEY'
 DAYBIT_API_SECRET_VARIABLE = 'DAYBIT_API_SECRET'

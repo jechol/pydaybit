@@ -1,19 +1,14 @@
 from setuptools import setup
 
 setup(name='pydaybit',
-      version='0.0.1',
+      version='0.0.2',
       description='an API wrapper for Daybit-exchange',
       classifiers=[
-          'Development Status :: 4 - Beta',
-          'Environment :: Console',
-          'Intended Audience :: Developers',
-          'Natural Language :: English',
-          'Natural Language :: Korean',
-          'Programming Language :: Python :: 3.5',
+          "Programming Language :: Python :: 3",
+          "License :: OSI Approved :: Apache Software License",
       ],
       author='Daybit Developers',
       url='https://github.com/daybit-exchange/pydaybit',
-      license='Copyright (c) Daybit',
       packages=['pydaybit'],
       setup_requires=[
           'pytest-runner',
