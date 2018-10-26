@@ -86,9 +86,11 @@ class Phoenix:
     def _remove_all_channels(self):
         self._channels.clear()
 
-    async def push(self, channel, event, payload, timeout=3, retry=3, wait_response=True):
+    async def push(self, channel, event, payload, timeout=None, retry=3, wait_response=True):
         if not self.connected:
             raise CommunicationError("sent a message before connection.")
+        if timeout is None:
+            timeout = self._timeout_secs
 
         msg_response = None
         ref = None
