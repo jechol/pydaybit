@@ -10,8 +10,7 @@ USE THE SOFTWARE AT YOUR OWN RISK. THE AUTHORS AND ALL AFFILIATES ASSUME NO RESP
 
 ## Installation
 
-    $ git clone https://github.com/daybit-exchange/pydaybit
-    $ pip install -e pydaybit
+    $ pip install --upgrade pydaybit
 
 ## Environment Variables
 * `DAYBIT_API_KEY`
