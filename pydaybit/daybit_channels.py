@@ -16,13 +16,16 @@ class DaybitChannel(Channel):
         self.callback_future = None
         super().__init__(socket, topic, params, max_queue, timeout_secs=timeout_secs)
 
-    async def push(self, event, payload={}, retry=3, wait_response=True):
+    async def push(self, event, payload={}, timeout=None, retry=3, wait_response=True):
+        if timeout is None:
+            timeout = self.timeout_secs
+
         try:
             payload.update({'timestamp': self._timestamp()})
 
             response = await super().push(event=event,
                                           payload=payload,
-                                          timeout=self.timeout_secs,
+                                          timeout=timeout,
                                           retry=retry,
                                           wait_response=wait_response)
             if response['status'] == 'ok':
