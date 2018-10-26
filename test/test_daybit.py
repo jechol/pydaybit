@@ -63,3 +63,7 @@ class TestAPI:
                     await (daybit.market_summaries / intv1)()
                     await (daybit.market_summaries / intv2)()
                     await asyncio.sleep(1 / rate_limit + 0.05)
+
+    @pytest.mark.skip(reason="Not implemented")
+    async def test_timeout_propagation(self):
+        pass

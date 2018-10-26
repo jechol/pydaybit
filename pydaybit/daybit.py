@@ -1,11 +1,13 @@
+import asyncio
 import logging
 import ssl as ssl_lib
+import time
 from decimal import Decimal
 
 import websockets
 
 from pydaybit import daybit_url, daybit_api_key, daybit_api_secret, PARAM_API_KEY, PARAM_API_SECRET
-from pydaybit.api_channels import API
+from pydaybit.daybit_channels import API
 from pydaybit.phoenix.message import PHOENIX_EVENT
 from pydaybit.phoenix.phoenix import Phoenix
 from pydaybit.ratelimit import RateLimit
@@ -18,7 +20,8 @@ logger = logging.getLogger(__name__)
 
 
 class Daybit(Phoenix):
-    def __init__(self, url=None, params={}, loop=None, heartbeat_secs=30, timeout_secs=3, ssl=None):
+    def __init__(self, url=None, params={}, loop=None, heartbeat_secs=30, sync_timestamp_secs=30, timeout_secs=3,
+                 ssl=None):
         if url is None:
             url = daybit_url()
         if 'api_key' not in params:
@@ -38,6 +41,8 @@ class Daybit(Phoenix):
         self._init_subscriptions()
         self.rate_limit = RateLimit(loop=self.loop)
         self._init_rate_limits()
+        self._timestamp_diff = 0
+        self._sync_timestamp_secs = sync_timestamp_secs
 
     def _init_subscriptions(self):
         self.coins = self.channel('/subscription:coins', channel_t=Coins)
@@ -83,6 +88,9 @@ class Daybit(Phoenix):
     async def connect(self):
         try:
             await super().connect()
+            self._coroutines.append(asyncio.ensure_future(self._sync_timestamp_coro(), loop=self.loop))
+            await self.sync_timestamp()
+
         except websockets.exceptions.InvalidStatusCode as e:
             if e.status_code == 403:
                 raise ConnectionError('{} Error, check your api_key or api_secret.'.format(e.status_code))
@@ -104,6 +112,16 @@ class Daybit(Phoenix):
                                   timeout=timeout,
                                   retry=retry,
                                   wait_response=wait_response)
+
+    async def sync_timestamp(self):
+        server_timestamp = await self.get_server_time()
+        here_timestamp = self.timestamp()
+        self._timestamp_diff = server_timestamp - here_timestamp
+
+    async def _sync_timestamp_coro(self):
+        while True:
+            await asyncio.sleep(self._sync_timestamp_secs, loop=self.loop)
+            await self.sync_timestamp()
 
     async def api(self):
         topic = '/api'
@@ -155,3 +173,11 @@ class Daybit(Phoenix):
     @optional('to_tag')
     async def create_wdrl(self, coin, to_addr, amount, **kwargs):
         return await (await self.api()).create_wdrl(coin, to_addr, amount, **kwargs)
+
+    @staticmethod
+    def timestamp():
+        return int(round(time.time() * 1000))
+
+    # estimated server timestamp
+    def estimated_timestamp(self):
+        return int(round(time.time() * 1000 + self._timestamp_diff))

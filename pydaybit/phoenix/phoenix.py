@@ -3,7 +3,6 @@ import json
 import logging
 import re
 import sys
-import time
 
 import websockets
 from async_timeout import timeout as atimeout
@@ -105,7 +104,6 @@ class Phoenix:
                         channel.join_ref = ref
                     if payload is None:
                         payload = {}
-                    payload["timestamp"] = int(time.time() * 1000)
                     msg = json.dumps(OutMessage(topic=channel.topic,
                                                 event=event,
                                                 payload=payload,
