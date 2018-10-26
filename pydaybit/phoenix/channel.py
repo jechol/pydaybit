@@ -60,15 +60,21 @@ class Channel:
             self.status = State.CLOSED
             return msg
 
-    async def push(self, event, payload={}, wait_response=True, timeout=3, retry=3):
-        return await self._push(event, payload, wait_response, timeout, retry)
+    async def push(self, event, payload={}, timeout=3, retry=3, wait_response=True):
+        return await self._push(event=event,
+                                payload=payload,
+                                timeout=timeout,
+                                retry=retry,
+                                wait_response=wait_response)
 
-    async def _push(self, event, payload=None, wait_response=True, timeout=3, retry=3, _internal_use=False):
+    async def _push(self, event, payload=None, timeout=3, retry=3, wait_response=True, _internal_use=False):
         if not _internal_use:
             if event in PHOENIX_EVENT.values():
                 raise NotAllowedEventName(event)
 
-        ret = await self.socket.push(self, event, payload,
+        ret = await self.socket.push(self,
+                                     event=event,
+                                     payload=payload,
                                      wait_response=wait_response,
                                      timeout=timeout,
                                      retry=retry)
