@@ -29,7 +29,7 @@ class Subscription(DaybitChannel):
 
         action = response['action']
         new_data = response.get('data', [{}])
-        self.updated_timestamp = time.time()
+        self.updated_timestamp = self.socket.estimated_timestamp()
 
         assert action in ['init', 'insert', 'update', 'upsert', 'delete']
 

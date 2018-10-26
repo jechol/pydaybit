@@ -1,5 +1,6 @@
 import logging
 import ssl as ssl_lib
+import time
 from decimal import Decimal
 
 import websockets
@@ -38,6 +39,7 @@ class Daybit(Phoenix):
         self._init_subscriptions()
         self.rate_limit = RateLimit(loop=self.loop)
         self._init_rate_limits()
+        self._timestamp_diff = 0
 
     def _init_subscriptions(self):
         self.coins = self.channel('/subscription:coins', channel_t=Coins)
@@ -83,6 +85,8 @@ class Daybit(Phoenix):
     async def connect(self):
         try:
             await super().connect()
+            await self.sync_timestamp()
+
         except websockets.exceptions.InvalidStatusCode as e:
             if e.status_code == 403:
                 raise ConnectionError('{} Error, check your api_key or api_secret.'.format(e.status_code))
@@ -104,6 +108,11 @@ class Daybit(Phoenix):
                                   timeout=timeout,
                                   retry=retry,
                                   wait_response=wait_response)
+
+    async def sync_timestamp(self):
+        server_timestamp = await self.get_server_time()
+        here_timestamp = self.timestamp()
+        self._timestamp_diff = server_timestamp - here_timestamp
 
     async def api(self):
         topic = '/api'
@@ -155,3 +164,11 @@ class Daybit(Phoenix):
     @optional('to_tag')
     async def create_wdrl(self, coin, to_addr, amount, **kwargs):
         return await (await self.api()).create_wdrl(coin, to_addr, amount, **kwargs)
+
+    @staticmethod
+    def timestamp():
+        return int(round(time.time() * 1000))
+
+    # estimated server timestamp
+    def estimated_timestamp(self):
+        return int(round(time.time() * 1000 + self._timestamp_diff))

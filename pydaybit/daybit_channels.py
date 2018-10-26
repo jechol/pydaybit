@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import time
 from decimal import Decimal
 
 from pydaybit.exceptions import UnexpectedFormat, find_error_types
@@ -16,13 +15,13 @@ class DaybitChannel(Channel):
         self.callback_future = None
         super().__init__(socket, topic, params, max_queue, timeout_secs=timeout_secs)
 
-    async def push(self, event, payload={}, timeout=None, retry=3, wait_response=True):
+    async def push(self, event, payload={}, timeout=None, retry=3, wait_response=True, with_timestamp=True):
         if timeout is None:
             timeout = self.timeout_secs
+        if with_timestamp:
+            payload.update({'timestamp': self.socket.estimated_timestamp()})
 
         try:
-            payload.update({'timestamp': self._timestamp()})
-
             response = await super().push(event=event,
                                           payload=payload,
                                           timeout=timeout,
@@ -56,10 +55,6 @@ class DaybitChannel(Channel):
         except KeyError:
             raise UnexpectedFormat
 
-    @staticmethod
-    def _timestamp():
-        return int(round(time.time() * 1000))
-
     async def request(self, payload={}, **kwargs):
         payload.update(kwargs)
         msg = await self.push('request', payload)
@@ -82,7 +77,7 @@ class API(DaybitChannel):
         super().__init__(socket, topic, params, max_queue, timeout_secs=timeout_secs)
 
     async def get_server_time(self):
-        server_time = (await self.push('get_server_time', payload={}))['server_time']
+        server_time = (await self.push('get_server_time', payload={}, with_timestamp=False))['server_time']
         return server_time
 
     async def create_order(self,
