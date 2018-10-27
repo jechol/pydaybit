@@ -1,10 +1,10 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='pydaybit',
-      version='0.0.2',
+      version='0.0.2A',
       description='an API wrapper for Daybit-exchange',
       long_description=long_description,
       long_description_content_type="text/markdown",
@@ -14,7 +14,7 @@ setup(name='pydaybit',
       ],
       author='Daybit Developers',
       url='https://github.com/daybit-exchange/pydaybit',
-      packages=['pydaybit'],
+      packages=find_packages(),
       setup_requires=[
           'pytest-runner',
       ],
