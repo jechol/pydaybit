@@ -47,8 +47,7 @@ from pydaybit import Daybit, PARAM_API_KEY, PARAM_API_SECRET
 
 
 async def daybit_trades():
-    async with Daybit(url='wws://api.daybit.com/v1/user_api_socket/websocket',
-                      params={PARAM_API_KEY: "YOUR_API_KEY",
+    async with Daybit(params={PARAM_API_KEY: "YOUR_API_KEY",
                               PARAM_API_SECRET: "YOUR_API_SECRET"}) as daybit:
         pprint(await daybit.trades(quote='USDT',
                                    base='BTC',
