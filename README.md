@@ -4,7 +4,7 @@
 [![Downloads](https://pepy.tech/badge/pydaybit)](https://pypi.org/project/pydaybit/)
 [![License](https://img.shields.io/github/license/daybit-exchange/pydaybit.svg)](https://github.com/daybit-exchange/pydaybit/blob/master/LICENSE)
 
-**Pydaybit** is an API wrapper for [**Daybit**](https://www.daybit.com) exchange  written in Python.
+**Pydaybit** is an API wrapper for [**DAYBIT**](https://www.daybit.com) exchange  written in Python.
 It supports python 3.5 or newer.
    
 ## Disclaimer
