@@ -226,4 +226,10 @@ async def daybit_my_my_airdrop_histories():
     async with Daybit() as daybit:
         pprint(await daybit.my_airdrop_histories())
 
-asyncio.get_event_loop().run_until_complete(daybit_my_my_airdrop_histories())
+
+async def daybit_trade_vols():
+    async with Daybit() as daybit:
+        pprint(await daybit.trade_vols(size=10))
+
+
+asyncio.get_event_loop().run_until_complete(daybit_trade_vols())
