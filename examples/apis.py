@@ -241,4 +241,10 @@ async def daybit_div_plans():
     async with Daybit() as daybit:
         pprint(await daybit.div_plans())
 
+
+async def daybit_my_day_avgs():
+    async with Daybit() as daybit:
+        pprint(await daybit.my_day_avgs())
+
+
 asyncio.get_event_loop().run_until_complete(daybit_trade_vols())
