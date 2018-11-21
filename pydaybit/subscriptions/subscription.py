@@ -282,3 +282,11 @@ class DayAvgs(Subscription):
 
     async def __call__(self, **kwargs):
         return await super().__call__(**kwargs)
+
+
+class DivPlans(Subscription):
+    def __init__(self, socket, topic, *args, **kwargs):
+        super().__init__(socket, topic, primary_key='start_time', *args, **kwargs)
+
+    async def __call__(self, **kwargs):
+        return await super().__call__(**kwargs)
