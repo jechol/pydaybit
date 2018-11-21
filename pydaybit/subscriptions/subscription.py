@@ -1,6 +1,5 @@
 import asyncio
 import re
-import time
 
 from pydaybit.daybit_channels import DaybitChannel
 from pydaybit.exceptions import PrimaryKeyError
@@ -293,6 +292,14 @@ class DivPlans(Subscription):
 
 
 class MyDayAvgs(Subscription):
+    def __init__(self, socket, topic, *args, **kwargs):
+        super().__init__(socket, topic, primary_key=None, *args, **kwargs)
+
+    async def __call__(self, **kwargs):
+        return await super().__call__(**kwargs)
+
+
+class MyTradeVols(Subscription):
     def __init__(self, socket, topic, *args, **kwargs):
         super().__init__(socket, topic, primary_key=None, *args, **kwargs)
 
