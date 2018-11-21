@@ -13,7 +13,7 @@ from pydaybit.phoenix.phoenix import Phoenix
 from pydaybit.ratelimit import RateLimit
 from pydaybit.subscriptions import Coins, CoinPrices, QuoteCoins, Markets, MarketSummaryIntervals, MarketSummaries, \
     OrderBooks, PriceHistoryIntervals, PriceHistories, Trades, MyUser, MyAssets, MyOrders, MyTrades, MyAirdropHistories, \
-    MyTXSummaries, TradeVols, DayAvgs, DivPlans, MyDayAvgs, MyTradeVols
+    MyTXSummaries, TradeVols, DayAvgs, DivPlans, MyDayAvgs, MyTradeVols, MyDivs
 from pydaybit.utility import optional
 
 logger = logging.getLogger(__name__)
@@ -67,6 +67,7 @@ class Daybit(Phoenix):
         self.div_plans = self.channel('/subscription:div_plans', channel_t=DivPlans)
         self.my_day_avgs = self.channel('/subscription:my_day_avgs', channel_t=MyDayAvgs)
         self.my_trade_vols = self.channel('/subscription:my_trade_vols', channel_t=MyTradeVols)
+        self.my_divs = self.channel('/subscription:my_divs', channel_t=MyDivs)
 
     def _init_rate_limits(self):
         self.rate_limit.add_limit('get_server_time', 10)
@@ -94,6 +95,7 @@ class Daybit(Phoenix):
         self.rate_limit.add_limit('div_plans', 3)
         self.rate_limit.add_limit('my_day_avgs', 3)
         self.rate_limit.add_limit('my_trade_vols', 3)
+        self.rate_limit.add_limit('my_divs', 3)
 
     async def connect(self):
         try:

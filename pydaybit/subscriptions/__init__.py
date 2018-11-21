@@ -1,3 +1,3 @@
 from pydaybit.subscriptions.subscription import Coins, CoinPrices, QuoteCoins, Markets, MarketSummaryIntervals, \
     MarketSummaries, OrderBooks, PriceHistoryIntervals, PriceHistories, Trades, MyUser, MyAssets, MyOrders, MyTrades, \
-    MyAirdropHistories, MyTXSummaries, TradeVols, DayAvgs, DivPlans, MyDayAvgs, MyTradeVols
+    MyAirdropHistories, MyTXSummaries, TradeVols, DayAvgs, DivPlans, MyDayAvgs, MyTradeVols, MyDivs
