@@ -1,6 +1,5 @@
 import asyncio
 import re
-import time
 
 from pydaybit.daybit_channels import DaybitChannel
 from pydaybit.exceptions import PrimaryKeyError
@@ -263,5 +262,55 @@ class MyAirdropHistories(Subscription):
         super().__init__(socket, topic, *args, **kwargs)
 
     @optional('to_id', 'size')
+    async def __call__(self, **kwargs):
+        return await super().__call__(**kwargs)
+
+
+class TradeVols(Subscription):
+    def __init__(self, socket, topic, *args, **kwargs):
+        super().__init__(socket, topic, primary_key='start_time', *args, **kwargs)
+
+    @optional('size')
+    async def __call__(self, **kwargs):
+        return await super().__call__(**kwargs)
+
+
+class DayAvgs(Subscription):
+    def __init__(self, socket, topic, *args, **kwargs):
+        super().__init__(socket, topic, primary_key=None, *args, **kwargs)
+
+    async def __call__(self, **kwargs):
+        return await super().__call__(**kwargs)
+
+
+class DivPlans(Subscription):
+    def __init__(self, socket, topic, *args, **kwargs):
+        super().__init__(socket, topic, primary_key='start_time', *args, **kwargs)
+
+    async def __call__(self, **kwargs):
+        return await super().__call__(**kwargs)
+
+
+class MyDayAvgs(Subscription):
+    def __init__(self, socket, topic, *args, **kwargs):
+        super().__init__(socket, topic, primary_key=None, *args, **kwargs)
+
+    async def __call__(self, **kwargs):
+        return await super().__call__(**kwargs)
+
+
+class MyTradeVols(Subscription):
+    def __init__(self, socket, topic, *args, **kwargs):
+        super().__init__(socket, topic, primary_key=None, *args, **kwargs)
+
+    async def __call__(self, **kwargs):
+        return await super().__call__(**kwargs)
+
+
+class MyDivs(Subscription):
+    def __init__(self, socket, topic, *args, **kwargs):
+        super().__init__(socket, topic, primary_key="start_time", *args, **kwargs)
+
+    @optional('to_timestamp', 'size')
     async def __call__(self, **kwargs):
         return await super().__call__(**kwargs)
