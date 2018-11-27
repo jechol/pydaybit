@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='pydaybit',
-      version='0.0.3',
-      description='an API wrapper for Daybit-exchange',
+      version='0.0.3.1',
+      description='an API wrapper for DAYBIT-exchange',
       long_description=long_description,
       long_description_content_type="text/markdown",
       classifiers=[
