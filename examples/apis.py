@@ -213,7 +213,7 @@ async def daybit_my_orders():
 
 async def daybit_my_trades():
     async with Daybit() as daybit:
-        pprint(await daybit.my_trades(sell=True))
+        pprint(await daybit.my_trades())
 
 
 async def daybit_my_tx_summaries():
