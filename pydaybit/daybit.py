@@ -12,15 +12,16 @@ from pydaybit.phoenix.message import PHOENIX_EVENT
 from pydaybit.phoenix.phoenix import Phoenix
 from pydaybit.ratelimit import RateLimit
 from pydaybit.subscriptions import Coins, CoinPrices, QuoteCoins, Markets, MarketSummaryIntervals, MarketSummaries, \
-    OrderBooks, PriceHistoryIntervals, PriceHistories, Trades, MyUser, MyAssets, MyOrders, MyTrades, MyAirdropHistories, \
-    MyTXSummaries, TradeVols, DayAvgs, DivPlans, MyDayAvgs, MyTradeVols, MyDivs
+    OrderBooks, PriceHistoryIntervals, PriceHistories, Trades, MyUser, MyAssets, MyOrders, MyTrades, \
+    MyAirdropHistories, MyTXSummaries, TradeVols, DayAvgs, DivPlans, MyDayAvgs, MyTradeVols, MyDivs
 from pydaybit.utility import optional
 
 logger = logging.getLogger(__name__)
 
 
 class Daybit(Phoenix):
-    def __init__(self, url=None, params={}, loop=None, heartbeat_secs=30, sync_timestamp_secs=30, timeout_secs=3,
+    def __init__(self, url=None, params={}, loop=None, heartbeat_secs=30, use_automated_timestamp_sync=True,
+                 sync_timestamp_secs=30, timeout_secs=3,
                  ssl=None):
         if url is None:
             url = daybit_url()
@@ -42,6 +43,7 @@ class Daybit(Phoenix):
         self.rate_limit = RateLimit(loop=self.loop)
         self._init_rate_limits()
         self._timestamp_diff = 0
+        self._use_automated_timestamp_sync = use_automated_timestamp_sync
         self._sync_timestamp_secs = sync_timestamp_secs
 
     def _init_subscriptions(self):
@@ -100,8 +102,9 @@ class Daybit(Phoenix):
     async def connect(self):
         try:
             await super().connect()
-            self._coroutines.append(asyncio.ensure_future(self._sync_timestamp_coro(), loop=self.loop))
-            await self.sync_timestamp()
+            if self._use_automated_timestamp_sync:
+                self._coroutines.append(asyncio.ensure_future(self._sync_timestamp_coro(), loop=self.loop))
+                await self.sync_timestamp()
 
         except websockets.exceptions.InvalidStatusCode as e:
             if e.status_code == 403:
