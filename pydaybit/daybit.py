@@ -118,6 +118,11 @@ class Daybit(Phoenix):
             else:
                 await self.rate_limit.wait(channel.subtopic)
 
+        if payload is None:
+            payload = {}
+        payload.update({'timestamp': self.estimated_timestamp(),
+                        'timeout': int(timeout * 1000)})
+
         return await super().push(channel=channel,
                                   event=event,
                                   payload=payload,

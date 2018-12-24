@@ -15,11 +15,9 @@ class DaybitChannel(Channel):
         self.callback_future = None
         super().__init__(socket, topic, params, max_queue, timeout_secs=timeout_secs)
 
-    async def push(self, event, payload={}, timeout=None, retry=3, wait_response=True, with_timestamp=True):
+    async def push(self, event, payload={}, timeout=None, retry=3, wait_response=True):
         if timeout is None:
             timeout = self.timeout_secs
-        if with_timestamp:
-            payload.update({'timestamp': self.socket.estimated_timestamp()})
 
         try:
             response = await super().push(event=event,
@@ -78,9 +76,7 @@ class API(DaybitChannel):
 
     async def get_server_time(self):
         server_time = (await self.push('get_server_time',
-                                       payload={},
-                                       timeout=60 * 60 * 24 * 7,
-                                       with_timestamp=True))['server_time']
+                                       payload={}))['server_time']
         return server_time
 
     async def create_order(self,
