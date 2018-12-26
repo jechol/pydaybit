@@ -111,7 +111,6 @@ class Phoenix:
                                                 payload=payload,
                                                 ref=ref,
                                                 join_ref=channel.join_ref,
-                                                timeout=timeout * 1000,
                                                 ).asdict())
                     logger.debug("> %s", msg)
                     await self._send(msg)

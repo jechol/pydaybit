@@ -222,9 +222,8 @@ class MyTrades(Subscription):
     def __init__(self, socket, topic, *args, **kwargs):
         super().__init__(socket, topic, *args, **kwargs)
 
-    @optional('quote', 'base', 'to_id', 'size')
-    async def __call__(self, sell, **kwargs):
-        kwargs.update({'sell': sell})
+    @optional('sell', 'quote', 'base', 'to_id', 'size')
+    async def __call__(self, **kwargs):
         return await super().__call__(**kwargs)
 
 

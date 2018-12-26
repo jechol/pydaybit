@@ -17,7 +17,7 @@ class Message(collections.namedtuple('Message', ['join_ref', 'ref', 'topic', 'ev
 
 
 class OutMessage(
-    collections.namedtuple('Message', ['join_ref', 'ref', 'topic', 'event', 'payload', 'timeout'])):
+    collections.namedtuple('Message', ['join_ref', 'ref', 'topic', 'event', 'payload'])):
     def asdict(self):
         return self._asdict()
 
@@ -35,7 +35,7 @@ def str_to_msg(str):
     return message
 
 
-def msg_to_str(ref, join_ref, topic, event, payload, timeout=3000):
+def msg_to_str(ref, join_ref, topic, event, payload):
     if payload is None:
         payload = {}
     payload['timestamp'] = int(time.time() * 1000)
@@ -43,6 +43,5 @@ def msg_to_str(ref, join_ref, topic, event, payload, timeout=3000):
                                 event=event,
                                 payload=payload,
                                 ref=ref,
-                                join_ref=join_ref,
-                                timeout=timeout).asdict())
+                                join_ref=join_ref).asdict())
     return msg
