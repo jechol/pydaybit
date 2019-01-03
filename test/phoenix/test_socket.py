@@ -61,7 +61,7 @@ def test_connection(unused_tcp_port):
 @pytest.mark.asyncio
 async def test_connection_refused(event_loop, unused_tcp_port):
     with pytest.raises(ConnectionRefusedError):
-        async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
             async with phoenix.channel('/channel'):
                 pass
 
@@ -70,11 +70,11 @@ def test_connection_closed_from_server(event_loop, unused_tcp_port):
     async def handler(_):
         asyncio.sleep(0.5, loop=event_loop)
 
-    start_server = websockets.serve(handler, 'localhost', unused_tcp_port, loop=event_loop)
+    start_server = websockets.serve(handler, '127.0.0.1', unused_tcp_port, loop=event_loop)
     server = event_loop.run_until_complete(start_server)
 
     async def run_client():
-        async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
             async with phoenix.channel('/channel') as ch:
                 await ch.push('event')
 
@@ -98,11 +98,11 @@ def test_first_message_become_lost(event_loop, unused_tcp_port):
                                   {'status': 'ok', 'response': {}})
             await ws.send(send_msg)
 
-    start_server = websockets.serve(handler_ignore_first_message, 'localhost', unused_tcp_port, loop=event_loop)
+    start_server = websockets.serve(handler_ignore_first_message, '127.0.0.1', unused_tcp_port, loop=event_loop)
     server = event_loop.run_until_complete(start_server)
 
     async def run_client():
-        async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
             async with phoenix.channel('/channel'):
                 pass
 
@@ -118,12 +118,12 @@ def test_server_is_too_busy_1(event_loop, unused_tcp_port):
         await wait_forever
 
     async def run_client():
-        async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
             async with phoenix.channel('/channel'):
                 pass
 
     with pytest.raises(CommunicationError):
-        start_server = websockets.serve(handler_wait_forever, 'localhost', unused_tcp_port, loop=event_loop)
+        start_server = websockets.serve(handler_wait_forever, '127.0.0.1', unused_tcp_port, loop=event_loop)
         server = event_loop.run_until_complete(start_server)
         event_loop.run_until_complete(run_client())
     server.close()
@@ -137,12 +137,12 @@ def test_server_is_too_busy_2(event_loop, unused_tcp_port):
         await wait_forever
 
     async def run_client():
-        async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
             async with phoenix.channel('/channel'):
                 asyncio.wait(0.5, loop=event_loop)
 
     with pytest.raises(CommunicationError):
-        start_server = websockets.serve(handler_wait_forever, 'localhost', unused_tcp_port, loop=event_loop)
+        start_server = websockets.serve(handler_wait_forever, '127.0.0.1', unused_tcp_port, loop=event_loop)
         server = event_loop.run_until_complete(start_server)
         event_loop.run_until_complete(run_client())
     server.close()
@@ -169,11 +169,11 @@ def test_bad_response_1(event_loop, unused_tcp_port):
                                   {'status': 'ok', 'response': {}})
             await ws.send(send_msg)
 
-    start_server = websockets.serve(handler_ok, 'localhost', unused_tcp_port, loop=event_loop)
+    start_server = websockets.serve(handler_ok, '127.0.0.1', unused_tcp_port, loop=event_loop)
     server = event_loop.run_until_complete(start_server)
 
     async def run_client():
-        async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
             async with phoenix.channel('/channel'):
                 pass
 
@@ -204,11 +204,11 @@ def test_bad_response_2(event_loop, unused_tcp_port):
                                   {'status': 'ok', 'response': {}})
             await ws.send(send_msg)
 
-    start_server = websockets.serve(handler_ok, 'localhost', unused_tcp_port, loop=event_loop)
+    start_server = websockets.serve(handler_ok, '127.0.0.1', unused_tcp_port, loop=event_loop)
     server = event_loop.run_until_complete(start_server)
 
     async def run_client():
-        async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
             async with phoenix.channel('/channel'):
                 pass
 
@@ -233,11 +233,11 @@ def test_bad_payload(event_loop, unused_tcp_port):
                                   {'status': 'ok', 'response': {}})
             await ws.send(send_msg)
 
-    start_server = websockets.serve(handler_ok, 'localhost', unused_tcp_port, loop=event_loop)
+    start_server = websockets.serve(handler_ok, '127.0.0.1', unused_tcp_port, loop=event_loop)
     server = event_loop.run_until_complete(start_server)
 
     async def run_client():
-        async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
             async with phoenix.channel('/channel'):
                 pass
 
@@ -265,11 +265,11 @@ def test_invalid_ref(event_loop, unused_tcp_port):
                                   {'status': 'ok', 'response': {}})
             await ws.send(send_msg)
 
-    start_server = websockets.serve(handler_ok, 'localhost', unused_tcp_port, loop=event_loop)
+    start_server = websockets.serve(handler_ok, '127.0.0.1', unused_tcp_port, loop=event_loop)
     server = event_loop.run_until_complete(start_server)
 
     async def run_client():
-        async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
             async with phoenix.channel('/channel'):
                 pass
 
@@ -289,13 +289,13 @@ def test_not_allowed_event(event_loop, unused_tcp_port):
                                   {'status': 'ok', 'response': {}})
             await ws.send(send_msg)
 
-    start_server = websockets.serve(handler_ok, 'localhost', unused_tcp_port, loop=event_loop)
+    start_server = websockets.serve(handler_ok, '127.0.0.1', unused_tcp_port, loop=event_loop)
     server = event_loop.run_until_complete(start_server)
 
     for key in PHOENIX_EVENT:
         with pytest.raises(NotAllowedEventName):
             async def run_client():
-                async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+                async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
                     async with phoenix.channel('/channel') as ch:
                         await ch.push(PHOENIX_EVENT[key])
 
@@ -338,12 +338,12 @@ def test_channel_to_5_notification(event_loop, unused_tcp_port):
 
     a_future = asyncio.Future(loop=event_loop)
     a_future.done()
-    start_server = websockets.serve(handler_ok, 'localhost', unused_tcp_port, loop=event_loop)
+    start_server = websockets.serve(handler_ok, '127.0.0.1', unused_tcp_port, loop=event_loop)
     server = event_loop.run_until_complete(start_server)
 
     async def run_client():
         cnt = 0
-        async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
             async with phoenix.channel('/channel') as ch:
                 while True:
                     try:
@@ -394,13 +394,13 @@ def test_notification(event_loop, unused_tcp_port):
 
     a_future = asyncio.Future(loop=event_loop)
     a_future.done()
-    start_server = websockets.serve(handler_ok, 'localhost', unused_tcp_port, loop=event_loop)
+    start_server = websockets.serve(handler_ok, '127.0.0.1', unused_tcp_port, loop=event_loop)
     server = event_loop.run_until_complete(start_server)
     cnt_q = asyncio.queues.Queue(num_topics * num_notice, loop=event_loop)
 
     async def run_client():
         joined = []
-        async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
             for i in range(num_topics):
                 async def joins(topic):
                     async with phoenix.channel(topic) as ch:
@@ -441,11 +441,11 @@ def test_socket_heartbeat(num_heartbeat, heartbeat_secs, event_loop, unused_tcp_
             variable.value += 1
             await ws.send(send_msg)
 
-    start_server = websockets.serve(handler_ok, 'localhost', unused_tcp_port, loop=event_loop)
+    start_server = websockets.serve(handler_ok, '127.0.0.1', unused_tcp_port, loop=event_loop)
     server = event_loop.run_until_complete(start_server)
 
     async def run_client():
-        async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop,
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop,
                            heartbeat_secs=heartbeat_secs) as phoenix:
             try:
                 async with atimeout(heartbeat_secs * (1.5 * num_heartbeat), loop=phoenix.loop):
@@ -476,14 +476,14 @@ def test_socket_disconnected(event_loop, unused_tcp_port):
             except asyncio.TimeoutError:
                 break
 
-    start_server = websockets.serve(handler_ok, 'localhost', unused_tcp_port, loop=event_loop)
+    start_server = websockets.serve(handler_ok, '127.0.0.1', unused_tcp_port, loop=event_loop)
     server = event_loop.run_until_complete(start_server)
 
     async def run_client():
         with pytest.raises(ConnectionClosed):
             try:
                 async with atimeout(1, loop=event_loop):
-                    async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+                    async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
                         async with phoenix.channel('/channel') as ch:
                             await asyncio.sleep(10, loop=phoenix.loop)
             except asyncio.TimeoutError:
@@ -497,7 +497,7 @@ def test_socket_disconnected(event_loop, unused_tcp_port):
 def test_channel_join_before_connection(event_loop):
     async def run_client():
         with pytest.raises(CommunicationError):
-            phoenix = Phoenix('ws://localhost', loop=event_loop)
+            phoenix = Phoenix('ws://127.0.0.1', loop=event_loop)
             await phoenix.channel('api').join()
 
     event_loop.run_until_complete(run_client())
@@ -531,12 +531,12 @@ def test_channel_join_ref_when_failed_to_get_response(event_loop, unused_tcp_por
         except websockets.ConnectionClosed:
             pass
 
-    start_server = websockets.serve(handler_never_accept_to_join, 'localhost', unused_tcp_port, loop=event_loop)
+    start_server = websockets.serve(handler_never_accept_to_join, '127.0.0.1', unused_tcp_port, loop=event_loop)
     server = event_loop.run_until_complete(start_server)
 
     async def run_client():
         num_retry = 5
-        async with Phoenix('ws://localhost:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
             with pytest.raises(CommunicationError):
                 ch = phoenix.channel('channel', timeout_secs=1, num_retry=num_retry)
                 await ch.join()
