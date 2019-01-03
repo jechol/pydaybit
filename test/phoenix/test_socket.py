@@ -118,7 +118,7 @@ def test_server_is_too_busy_1(event_loop, unused_tcp_port):
         await wait_forever
 
     async def run_client():
-        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), timeout_secs=0.1, loop=event_loop) as phoenix:
             async with phoenix.channel('/channel'):
                 pass
 
@@ -137,7 +137,7 @@ def test_server_is_too_busy_2(event_loop, unused_tcp_port):
         await wait_forever
 
     async def run_client():
-        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), loop=event_loop) as phoenix:
+        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), timeout_secs=0.1, loop=event_loop) as phoenix:
             async with phoenix.channel('/channel'):
                 asyncio.wait(0.5, loop=event_loop)
 
