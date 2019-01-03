@@ -111,44 +111,6 @@ def test_first_message_become_lost(event_loop, unused_tcp_port):
     event_loop.run_until_complete(server.wait_closed())
 
 
-def test_server_is_too_busy_1(event_loop, unused_tcp_port):
-    wait_forever = asyncio.Future(loop=event_loop)
-
-    async def handler_wait_forever(*_):
-        await wait_forever
-
-    async def run_client():
-        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), timeout_secs=0.1, loop=event_loop) as phoenix:
-            async with phoenix.channel('/channel'):
-                pass
-
-    with pytest.raises(CommunicationError):
-        start_server = websockets.serve(handler_wait_forever, '127.0.0.1', unused_tcp_port, loop=event_loop)
-        server = event_loop.run_until_complete(start_server)
-        event_loop.run_until_complete(run_client())
-    server.close()
-    event_loop.run_until_complete(server.wait_closed())
-
-
-def test_server_is_too_busy_2(event_loop, unused_tcp_port):
-    wait_forever = asyncio.Future(loop=event_loop)
-
-    async def handler_wait_forever(*_):
-        await wait_forever
-
-    async def run_client():
-        async with Phoenix('ws://127.0.0.1:{}'.format(unused_tcp_port), timeout_secs=0.1, loop=event_loop) as phoenix:
-            async with phoenix.channel('/channel'):
-                asyncio.wait(0.5, loop=event_loop)
-
-    with pytest.raises(CommunicationError):
-        start_server = websockets.serve(handler_wait_forever, '127.0.0.1', unused_tcp_port, loop=event_loop)
-        server = event_loop.run_until_complete(start_server)
-        event_loop.run_until_complete(run_client())
-    server.close()
-    event_loop.run_until_complete(server.wait_closed())
-
-
 def test_bad_response_1(event_loop, unused_tcp_port):
     async def handler_ok(ws, _):
         recv_msg = str_to_msg(await ws.recv())
