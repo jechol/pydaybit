@@ -41,7 +41,7 @@ class Phoenix:
         try:
             logger.info("connect to %s.", furl(self.url).add(self.params).url)
             self.connected = True
-            async with atimeout(10, loop=self.loop):
+            async with atimeout(self._timeout_secs * 2, loop=self.loop):
                 self._socket = await websockets.connect(furl(self.url).add(self.params).url,
                                                         ssl=self._ssl,
                                                         loop=self.loop)
